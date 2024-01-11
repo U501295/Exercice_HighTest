@@ -1,14 +1,17 @@
 package org.exercice;
 
+import net.sourceforge.tess4j.TesseractException;
+import org.exercice.actions.hightest.HightestHomePageActions;
 import org.exercice.actions.hightest.HightestResultPageAction;
-import org.exercice.actions.hightest.HomePageActions;
 import org.exercice.actions.hightest.ISTQBQuestionPageActions;
 import org.exercice.actions.hightest.ToolBoxPageActions;
+import org.exercice.actions.linkedin.LinkedInHomePageActions;
+import org.exercice.actions.linkedin.LinkedInMainPageActions;
 import org.exercice.utils.AutomTools;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.time.Duration;
 
 
@@ -20,14 +23,14 @@ class ConnectionTest {
         AutomTools.driverImplicitWaitConfig(Duration.ofSeconds(15));
     }
 
-    @AfterAll
-    public static void finish() {
-        AutomTools.closeDriver();
-    }
+//    @AfterAll
+//    public static void finish() {
+//        AutomTools.closeDriver();
+//    }
 
     @Test
     void shouldGetToEndOfScenarioWithTotalSuccess() {
-        HomePageActions onHomePage = new HomePageActions();
+        HightestHomePageActions onHomePage = new HightestHomePageActions();
         onHomePage.getToHomePage("https://hightest.nc/");
         onHomePage.clickToolBoxButton();
         ToolBoxPageActions onToolBoxPage = new ToolBoxPageActions();
@@ -41,5 +44,16 @@ class ConnectionTest {
         onHightestResultPage.submitEmailAdressToReceiveResults("jul.baroni@orange.fr");
         onHightestResultPage.clickOkayButton();
 
+    }
+
+    @Test
+    void shouldGetThroughLinkedInSteps() throws TesseractException, IOException {
+        LinkedInHomePageActions onLinkedInHomePage = new LinkedInHomePageActions();
+        onLinkedInHomePage.getToHomePage("https://www.linkedin.com/home");
+        onLinkedInHomePage.submitLinkedInConnectionInformations("TestIhmLinkedIn@gmail.com", "Parcours123!");
+        LinkedInMainPageActions onLinkedInMainPage = new LinkedInMainPageActions();
+        onLinkedInMainPage.openChatWindowWithJulienBaroni();
+        onLinkedInMainPage.openResults();
+        onLinkedInMainPage.checkTotalSuccess();
     }
 }
