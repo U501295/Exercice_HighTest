@@ -1,31 +1,42 @@
 package org.exercice.actions.hightest;
 
+import com.aventstack.extentreports.Status;
 import org.exercice.object_repository.hightest.ISTQBQuestionPageRepository;
 import org.exercice.utils.AutomTools;
 import org.exercice.utils.LocalDrivers;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
+import static org.exercice.utils.Reporter.testCase;
+
 public class ISTQBQuestionPageActions {
 
-    private ISTQBQuestionPageRepository istqbQuestionPageRepository;
+    private static ISTQBQuestionPageRepository istqbQuestionPageRepository;
+
+    private static void loadISTQBQuestionsContextObjects() {
+        try {
+            istqbQuestionPageRepository = new ISTQBQuestionPageRepository();
+        } catch (NoSuchElementException e) {
+            testCase.log(Status.FAIL, "ISTQB questions page objects loading failed : " + e.getMessage());
+        }
+        testCase.log(Status.PASS, "ISTQB questions page objects loaded");
+    }
 
     public void explicitlyWaitForRadioButtonsToBeLoaded() {
-        istqbQuestionPageRepository = new ISTQBQuestionPageRepository();
+        loadISTQBQuestionsContextObjects();
         WebDriverWait wait = new WebDriverWait(LocalDrivers.defaultProjectDriver, Duration.ofSeconds(50));
         wait.until(ExpectedConditions.elementToBeClickable(istqbQuestionPageRepository.goodAnswerQuestion1));
+
     }
 
     public void clickTerminateButton() {
-        istqbQuestionPageRepository = new ISTQBQuestionPageRepository();
         AutomTools.customClick(istqbQuestionPageRepository.terminateButton);
-
     }
 
     public void answerAllTestQuestionWithCompleteSuccess() {
-        istqbQuestionPageRepository = new ISTQBQuestionPageRepository();
         AutomTools.customClick(istqbQuestionPageRepository.goodAnswerQuestion1);
         AutomTools.customClick(istqbQuestionPageRepository.goodAnswerQuestion2);
         AutomTools.customClick(istqbQuestionPageRepository.goodAnswerQuestion3);
