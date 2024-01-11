@@ -30,16 +30,18 @@ public class LinkedInMainPageActions {
         AutomTools.customClick(linkedInChatPageRepository.resultImageInChat);
     }
 
-    public void checkTotalSuccess() throws TesseractException, IOException {
+    public void checkTotalSuccess() throws TesseractException, IOException, InterruptedException {
         // Find the image element
         contactChatRepository = new ContactChatRepository();
+        AutomTools.customClick(contactChatRepository.zoomedImageElement);
         AutomTools.captureCroppedPicture(contactChatRepository.zoomedImageElement);
 
         // Use Tesseract OCR to extract text from the image
         ITesseract tesseract = new Tesseract();
         tesseract.setLanguage("eng");
         tesseract.setDatapath("src/test/resources/tessdata");
-        String result = tesseract.doOCR(new File("src/test/resources/testImage.png"));
+        String result = tesseract.doOCR(new File("src/test/resources/ResultImage.png"));
+        System.out.print(result);
     }
 
 

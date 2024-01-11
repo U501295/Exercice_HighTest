@@ -47,7 +47,7 @@ class ConnectionTest {
     }
 
     @Test
-    void shouldGetThroughLinkedInSteps() throws TesseractException, IOException {
+    void shouldGetThroughLinkedInSteps() throws TesseractException, IOException, InterruptedException {
         LinkedInHomePageActions onLinkedInHomePage = new LinkedInHomePageActions();
         onLinkedInHomePage.getToHomePage("https://www.linkedin.com/home");
         onLinkedInHomePage.submitLinkedInConnectionInformations("TestIhmLinkedIn@gmail.com", "Parcours123!");

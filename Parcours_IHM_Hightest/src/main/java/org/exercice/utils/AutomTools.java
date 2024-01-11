@@ -38,14 +38,16 @@ public class AutomTools {
         actions.moveToElement(webElement);
         actions.perform();
         webElement.click();
+
     }
 
-    public static void captureCroppedPicture(WebElement element) throws IOException {
+    public static void captureCroppedPicture(WebElement element) throws IOException, InterruptedException {
 
         //cast element to wrapsDriver
         //WrapsDriver wrapsDriver = (WrapsDriver) element;
 
         // get the entire screenshot from the driver of passed WebElement
+        Thread.sleep(3000);
         File screen = ((TakesScreenshot) LocalDrivers.defaultProjectDriver)
                 .getScreenshotAs(OutputType.FILE);
 
@@ -65,10 +67,11 @@ public class AutomTools {
 
         // create image  for element using its location and size.
         // this will give image data specific to the WebElement
-        BufferedImage dest = image.getSubimage(point.getX(), point.getY(), rect.width,
-                rect.height);
-
+        BufferedImage dest = image.getSubimage(0, (int) image.getHeight() / 2, image.getWidth(), image.getHeight() / 2);
+        //image.getSubimage(point.getX(), point.getY(), rect.width,
+        //rect.height);
         // write back the image data for element in new File
+        ImageIO.write(image, "png", new File("src/test/resources/Screen.png"));
         ImageIO.write(dest, "png", new File("src/test/resources/ResultImage.png"));
     }
 
