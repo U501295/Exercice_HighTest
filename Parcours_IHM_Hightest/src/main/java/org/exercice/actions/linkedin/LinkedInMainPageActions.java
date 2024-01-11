@@ -30,7 +30,7 @@ public class LinkedInMainPageActions {
         AutomTools.customClick(linkedInChatPageRepository.resultImageInChat);
     }
 
-    public void checkTotalSuccess() throws TesseractException, IOException, InterruptedException {
+    public String checkTotalSuccess() throws TesseractException, IOException, InterruptedException {
         // Find the image element
         contactChatRepository = new ContactChatRepository();
         AutomTools.customClick(contactChatRepository.zoomedImageElement);
@@ -41,7 +41,7 @@ public class LinkedInMainPageActions {
         tesseract.setLanguage("eng");
         tesseract.setDatapath("src/test/resources/tessdata");
         String result = tesseract.doOCR(new File("src/test/resources/ResultImage.png"));
-        System.out.print(result);
+        return result;
     }
 
 

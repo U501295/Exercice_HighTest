@@ -38,7 +38,6 @@ public class AutomTools {
         actions.moveToElement(webElement);
         actions.perform();
         webElement.click();
-
     }
 
     public static void captureCroppedPicture(WebElement element) throws IOException, InterruptedException {
@@ -76,9 +75,9 @@ public class AutomTools {
     }
 
 
-    public static void switchToggleFocus(Integer toggleNumber) {
+    public static void switchTabFocus(Integer tab) {
         ArrayList<String> tabs = new ArrayList<>(LocalDrivers.defaultProjectDriver.getWindowHandles());
-        LocalDrivers.defaultProjectDriver.switchTo().window(tabs.get(toggleNumber));
+        LocalDrivers.defaultProjectDriver.switchTo().window(tabs.get(tab));
     }
 
     public static void customClick(WebElement webElement) {
