@@ -1,7 +1,7 @@
 package org.exercice;
 
+import com.aventstack.extentreports.Status;
 import net.sourceforge.tess4j.TesseractException;
-import org.assertj.core.api.Assertions;
 import org.exercice.actions.hightest.HightestHomePageActions;
 import org.exercice.actions.hightest.HightestResultPageAction;
 import org.exercice.actions.hightest.ISTQBQuestionPageActions;
@@ -16,22 +16,33 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.time.Duration;
 
+import static org.exercice.utils.Reporter.extent;
+import static org.exercice.utils.Reporter.extentSparkReporter;
+import static org.exercice.utils.Reporter.testCase;
 
-class ConnectionTest {
+
+class EndtoEndIntegTest {
+
 
     @BeforeAll
     public static void configAndInit() {
         AutomTools.makeDriverChrome();
         AutomTools.driverImplicitWaitConfig(Duration.ofSeconds(15));
+        extent.attachReporter(extentSparkReporter);
+
+
     }
 
     @AfterAll
     public static void finish() {
         AutomTools.closeDriver();
+        extent.flush();
+
     }
 
     @Test
     void shouldGetToEndOfScenarioWithTotalSuccess() throws TesseractException, IOException, InterruptedException {
+        testCase = extent.createTest("Parcours bout en bout");
         HightestHomePageActions onHomePage = new HightestHomePageActions();
         onHomePage.getToHomePage("https://hightest.nc/");
         onHomePage.clickToolBoxButton();
@@ -51,7 +62,13 @@ class ConnectionTest {
         LinkedInMainPageActions onLinkedInMainPage = new LinkedInMainPageActions();
         onLinkedInMainPage.openChatWindowWithJulienBaroni();
         onLinkedInMainPage.openResults();
-        Assertions.assertThat(onLinkedInMainPage.checkTotalSuccess().contains("20 question(s) sur 20, soit 100 % de réussite"));
+        if (onLinkedInMainPage.checkTotalSuccess().contains("20 question(s) sur 20, soit 100 % de réussite")) {
+            testCase.log(Status.PASS, "The total score is 100%");
+            testCase.addScreenCaptureFromPath("classpath:ResultImage.png");
+        } else {
+            testCase.log(Status.FAIL, "The total score is not 100%");
+
+        }
     }
 
 }
