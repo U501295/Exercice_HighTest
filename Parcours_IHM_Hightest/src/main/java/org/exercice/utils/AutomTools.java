@@ -7,6 +7,7 @@ import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -18,37 +19,43 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Map;
 
+import static org.exercice.utils.LocalDrivers.defaultProjectDriver;
 import static org.exercice.utils.Reporter.testCase;
 
 @UtilityClass
 public class AutomTools {
 
     public static void makeDriverChrome() {
-        LocalDrivers.defaultProjectDriver = new ChromeDriver();
+        defaultProjectDriver = new ChromeDriver();
     }
 
     public static void closeDriver() {
-        LocalDrivers.defaultProjectDriver.quit();
+        defaultProjectDriver.quit();
     }
 
     public static void driverImplicitWaitConfig(Duration duration) {
-        LocalDrivers.defaultProjectDriver.manage().timeouts().implicitlyWait(duration);
+        defaultProjectDriver.manage().timeouts().implicitlyWait(duration);
     }
 
-    private void configuredClick(WebElement webElement) {
-        Actions actions = new Actions(LocalDrivers.defaultProjectDriver);
-        actions.moveToElement(webElement);
-        actions.perform();
-        webElement.click();
-        testCase.log(Status.PASS, "Successful click on : " + webElement + " element");
+    private void configuredClick(Map.Entry<String, WebElement> entry) {
+        Actions actions = new Actions(defaultProjectDriver);
+        actions.moveToElement(entry.getValue());
+        try {
+            actions.perform();
+        } catch (StaleElementReferenceException e) {
+            testCase.log(Status.FAIL, entry.getKey() + " was previously located, but can not be currently accessed");
+        }
+        entry.getValue().click();
+        testCase.log(Status.PASS, "Successful click on : " + entry.getKey() + " element");
     }
 
     public static void captureCroppedPicture() throws InterruptedException {
         BufferedImage image = null;
         // get the entire screenshot from the driver of passed WebElement
         Thread.sleep(3000);
-        File screen = ((TakesScreenshot) LocalDrivers.defaultProjectDriver)
+        File screen = ((TakesScreenshot) defaultProjectDriver)
                 .getScreenshotAs(OutputType.FILE);
         testCase.log(Status.PASS, "Success in taking a screenshot");
 
@@ -72,27 +79,42 @@ public class AutomTools {
             testCase.log(Status.FAIL, "Could not save image from screenshot in output folder");
         }
         testCase.log(Status.PASS, "Success in saving the screenshot");
+    }
+
+    public static void customDoubleClick(Map.Entry<String, WebElement> entry) {
+        Actions actions = new Actions(defaultProjectDriver);
+        actions.doubleClick(entry.getValue()).perform();
+    }
 
 
+    public static void customSendKeys(Map.Entry<String, WebElement> entry, String content) {
+        try {
+            entry.getValue().sendKeys(content);
+            testCase.log(Status.PASS, "Success in sending keys : " + content + " " + "to web element : " + entry.getKey());
+        } catch (NoSuchElementException e) {
+            testCase.log(Status.FAIL, "Element : " + entry.getKey() + " is not present");
+        } catch (ElementNotInteractableException e) {
+            testCase.log(Status.FAIL, "Element : " + entry.getKey() + " is present but not usage to send keys");
+        }
     }
 
 
     public static void switchTabFocus(Integer tab) {
-        ArrayList<String> tabs = new ArrayList<>(LocalDrivers.defaultProjectDriver.getWindowHandles());
-        LocalDrivers.defaultProjectDriver.switchTo().window(tabs.get(tab));
+        ArrayList<String> tabs = new ArrayList<>(defaultProjectDriver.getWindowHandles());
+        defaultProjectDriver.switchTo().window(tabs.get(tab));
         testCase.log(Status.PASS, "Success in switching tab focus");
     }
 
-    public static void customClick(WebElement webElement) {
+    public static void customClick(Map.Entry<String, WebElement> entry) {
         try {
-            configuredClick(webElement);
+            configuredClick(entry);
         } catch (ElementClickInterceptedException e) {
-            ((JavascriptExecutor) LocalDrivers.defaultProjectDriver).executeScript("arguments[0].scrollIntoView(true);", webElement);
-            configuredClick(webElement);
+            ((JavascriptExecutor) defaultProjectDriver).executeScript("arguments[0].scrollIntoView(true);", entry.getValue());
+            configuredClick(entry);
         } catch (NoSuchElementException e) {
-            testCase.log(Status.FAIL, "Element :" + webElement.getAccessibleName() + " is not present");
+            testCase.log(Status.FAIL, "Element :" + entry.getKey() + " is not present");
         } catch (ElementNotInteractableException e) {
-            testCase.log(Status.FAIL, "Element :" + webElement.getAccessibleName() + " is present but not clickable");
+            testCase.log(Status.FAIL, "Element :" + entry.getKey() + " is present but not clickable");
         }
     }
 }

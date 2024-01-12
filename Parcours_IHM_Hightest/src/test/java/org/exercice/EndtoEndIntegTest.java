@@ -51,7 +51,7 @@ class EndtoEndIntegTest {
         AutomTools.switchTabFocus(1);
         ISTQBQuestionPageActions onISTQBQuestionPage = new ISTQBQuestionPageActions();
         onISTQBQuestionPage.explicitlyWaitForRadioButtonsToBeLoaded();
-        onISTQBQuestionPage.answerAllTestQuestionWithCompleteSuccess();
+        onISTQBQuestionPage.goodAnswersToAllTestQuestion();
         onISTQBQuestionPage.clickTerminateButton();
         HightestResultPageAction onHightestResultPage = new HightestResultPageAction();
         onHightestResultPage.submitEmailAdressToReceiveResults("jul.baroni@orange.fr");

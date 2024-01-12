@@ -1,33 +1,21 @@
 package org.exercice.actions.hightest;
 
-import com.aventstack.extentreports.Status;
 import org.exercice.object_repository.hightest.HighTestResultPageRepository;
 import org.exercice.utils.AutomTools;
-import org.openqa.selenium.NoSuchElementException;
+import org.exercice.utils.ProjectRepository;
 
-import static org.exercice.utils.Reporter.testCase;
+import static org.exercice.object_repository.hightest.HighTestResultPageRepository.loadResultPageContextObjects;
 
 public class HightestResultPageAction {
 
-
-    private static HighTestResultPageRepository highTestResultPageRepository;
-
-    private static void loadResultPageContextObjects() {
-        try {
-            highTestResultPageRepository = new HighTestResultPageRepository();
-        } catch (NoSuchElementException e) {
-            testCase.log(Status.FAIL, "Hightest result page objects loading failed : " + e.getMessage());
-        }
-        testCase.log(Status.PASS, "Hightest result page objects loaded");
-    }
-
     public void submitEmailAdressToReceiveResults(String adress) {
-        loadResultPageContextObjects();
-        highTestResultPageRepository.emailBox.sendKeys(adress);
+        HighTestResultPageRepository localContext = loadResultPageContextObjects();
+        AutomTools.customSendKeys(ProjectRepository.getWebElementFromProjectRepo(localContext.getEmailBox()), adress);
     }
 
     public void clickOkayButton() {
-        AutomTools.customClick(highTestResultPageRepository.submitButton);
+        HighTestResultPageRepository localContext = loadResultPageContextObjects();
+        AutomTools.customClick(ProjectRepository.getWebElementFromProjectRepo(localContext.getSubmitButton()));
     }
 
 }
