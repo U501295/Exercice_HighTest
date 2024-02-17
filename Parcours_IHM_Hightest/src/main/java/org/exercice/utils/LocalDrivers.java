@@ -10,6 +10,6 @@ import org.openqa.selenium.WebDriver;
 @UtilityClass
 public class LocalDrivers {
 
-    public static WebDriver defaultProjectDriver;
+    public WebDriver defaultProjectDriver;
 
 }

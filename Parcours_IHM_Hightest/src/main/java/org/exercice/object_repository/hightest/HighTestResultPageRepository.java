@@ -23,7 +23,7 @@ public class HighTestResultPageRepository {
             webElementsRepository.put("Hightest result page email box", highTestResultPageRepository.emailBox);
             webElementsRepository.put("Hightest result page submit button", highTestResultPageRepository.submitButton);
         } catch (NoSuchElementException e) {
-            testCase.log(Status.FAIL, "Hightest result page objects loading failed : " + e.getMessage());
+            testCase.log(Status.FAIL, "Hightest result page objects loading failed : " + e.getCause());
         }
         return highTestResultPageRepository;
     }

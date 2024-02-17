@@ -1,7 +1,9 @@
 package org.exercice;
 
-
 import com.aventstack.extentreports.Status;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import net.sourceforge.tess4j.TesseractException;
 import org.exercice.actions.hightest.HightestHomePageActions;
 import org.exercice.actions.hightest.HightestResultPageAction;
@@ -10,62 +12,59 @@ import org.exercice.actions.hightest.ToolBoxPageActions;
 import org.exercice.actions.linkedin.LinkedInHomePageActions;
 import org.exercice.actions.linkedin.LinkedInMainPageActions;
 import org.exercice.utils.AutomTools;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.openqa.selenium.NoSuchWindowException;
 
-import java.io.IOException;
-import java.time.Duration;
-
-import static org.exercice.utils.AutomTools.driverImplicitWaitConfig;
-import static org.exercice.utils.AutomTools.makeDriverChrome;
-import static org.exercice.utils.Reporter.extent;
-import static org.exercice.utils.Reporter.extentSparkReporter;
 import static org.exercice.utils.Reporter.testCase;
 
+public class GherkinSteps {
 
-class EndtoEndIntegTest {
-
-
-    @BeforeAll
-    public static void configAndInit() {
-        makeDriverChrome();
-        driverImplicitWaitConfig(Duration.ofSeconds(15));
-        extent.attachReporter(extentSparkReporter);
-
-
-    }
-
-    @AfterAll
-    public static void finish() {
-        AutomTools.closeDriver();
-        extent.flush();
-
-    }
-
-    @Test
-    void shouldGetToEndOfScenarioWithTotalSuccess() throws TesseractException, IOException, InterruptedException {
-        testCase = extent.createTest("Parcours bout en bout");
+    @Given("^I connect to Hightest$")
+    public void i_connect_to_Hightest() {
         HightestHomePageActions onHomePage = new HightestHomePageActions();
         onHomePage.getToHomePage("https://hightest.nc/");
         onHomePage.clickToolBoxButton();
+    }
+
+    @When("^I go to the ToolBox section$")
+    public void i_go_to_the_ToolBox_section() {
         ToolBoxPageActions onToolBoxPage = new ToolBoxPageActions();
         onToolBoxPage.clickISTQBFoundationFrenchButton();
         AutomTools.switchTabFocus(1);
+    }
+
+    @When("^I take the French ISTQB Quizz and all my answers are good$")
+    public void i_take_the_French_ISTQB_Quizz() throws NoSuchWindowException {
         ISTQBQuestionPageActions onISTQBQuestionPage = new ISTQBQuestionPageActions();
         onISTQBQuestionPage.explicitlyWaitForRadioButtonsToBeLoaded();
         onISTQBQuestionPage.goodAnswersToAllTestQuestion();
         onISTQBQuestionPage.clickTerminateButton();
+    }
+
+    @When("^I give Julien Baroni's email for him to receive the results$")
+    public void i_give_Julien_Baroni_s_email_for_him_to_receive_the_results() {
         HightestResultPageAction onHightestResultPage = new HightestResultPageAction();
         onHightestResultPage.submitEmailAdressToReceiveResults("jul.baroni@orange.fr");
         onHightestResultPage.clickOkayButton();
+    }
+
+    @When("^I connect to LinkedIn$")
+    public void i_connect_to_LinkedIn() {
         LinkedInHomePageActions onLinkedInHomePage = new LinkedInHomePageActions();
         onLinkedInHomePage.getToHomePage("https://www.linkedin.com/home");
         onLinkedInHomePage.submitLinkedInConnectionInformations("TestIhmLinkedIn@gmail.com", "Parcours123!");
+    }
+
+    @When("^I open the results Julien Baroni sent me$")
+    public void i_open_the_results_Julien_Baroni_sent_me() {
         LinkedInMainPageActions onLinkedInMainPage = new LinkedInMainPageActions();
         onLinkedInMainPage.openChatWindowWithJulienBaroni();
         onLinkedInMainPage.openResults();
-        if (onLinkedInMainPage.checkTotalSuccess().contains("20 question(s) sur 20, soit 100 % de réussite")) {
+    }
+
+    @Then("^then content of the results indicates \"([^\"]*)\"$")
+    public void then_content_of_the_results_indicates(String arg) throws TesseractException, InterruptedException {
+        LinkedInMainPageActions onLinkedInMainPage = new LinkedInMainPageActions();
+        if (onLinkedInMainPage.checkTotalSuccess().contains(arg)) {
             testCase.log(Status.PASS, "The total score is 100%");
             testCase.addScreenCaptureFromPath("classpath:ResultImage.png");
         } else {

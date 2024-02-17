@@ -21,7 +21,7 @@ public class LinkedInMainPageRepository {
             linkedInMainPageRepository = new LinkedInMainPageRepository();
             webElementsRepository.put("chat window with the contact Julien Baroni on LinkedIn", linkedInMainPageRepository.chatContactJulienBaroni);
         } catch (NoSuchElementException e) {
-            testCase.log(Status.FAIL, "LinkedIn main page objects loading failed : " + e.getMessage());
+            testCase.log(Status.FAIL, "LinkedIn main page objects loading failed : " + e.getCause());
         }
         return linkedInMainPageRepository;
     }

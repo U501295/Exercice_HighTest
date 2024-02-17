@@ -82,8 +82,16 @@ public class AutomTools {
     }
 
     public static void customDoubleClick(Map.Entry<String, WebElement> entry) {
-        Actions actions = new Actions(defaultProjectDriver);
-        actions.doubleClick(entry.getValue()).perform();
+        try {
+            Actions actions = new Actions(defaultProjectDriver);
+            actions.doubleClick(entry.getValue()).perform();
+            testCase.log(Status.PASS, "Success in double clicking on : " + entry.getKey() + " " + " element : ");
+        } catch (NoSuchElementException e) {
+            testCase.log(Status.FAIL, "Element : " + entry.getKey() + " is not present");
+        } catch (ElementNotInteractableException e) {
+            testCase.log(Status.FAIL, "Element : " + entry.getKey() + " is present but not usable to double click");
+        }
+
     }
 
 
@@ -94,7 +102,7 @@ public class AutomTools {
         } catch (NoSuchElementException e) {
             testCase.log(Status.FAIL, "Element : " + entry.getKey() + " is not present");
         } catch (ElementNotInteractableException e) {
-            testCase.log(Status.FAIL, "Element : " + entry.getKey() + " is present but not usage to send keys");
+            testCase.log(Status.FAIL, "Element : " + entry.getKey() + " is present but not usable to send keys");
         }
     }
 

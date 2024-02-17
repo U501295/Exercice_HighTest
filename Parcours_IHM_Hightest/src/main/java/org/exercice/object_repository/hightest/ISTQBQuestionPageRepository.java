@@ -61,7 +61,7 @@ public class ISTQBQuestionPageRepository {
             webElementsRepository.put("Radio button for answering correctly to question 20", istqbQuestionPageRepository.goodAnswerQuestion20);
             webElementsRepository.put("Terminé button", istqbQuestionPageRepository.terminateButton);
         } catch (NoSuchElementException e) {
-            testCase.log(Status.FAIL, "ISTQB questions page objects loading failed : " + e.getMessage());
+            testCase.log(Status.FAIL, "ISTQB questions page objects loading failed : " + e.getCause());
         }
         return istqbQuestionPageRepository;
     }

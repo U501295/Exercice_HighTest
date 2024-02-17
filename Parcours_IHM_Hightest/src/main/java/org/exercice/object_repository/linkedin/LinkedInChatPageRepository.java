@@ -22,7 +22,7 @@ public class LinkedInChatPageRepository {
             linkedInChatPageRepository = new LinkedInChatPageRepository();
             webElementsRepository.put("image from the linkedIn chat", linkedInChatPageRepository.resultImageInChat);
         } catch (NoSuchElementException e) {
-            testCase.log(Status.FAIL, "LinkedIn chat page objects loading failed : " + e.getMessage());
+            testCase.log(Status.FAIL, "LinkedIn chat page objects loading failed : " + e.getCause());
         }
         return linkedInChatPageRepository;
     }

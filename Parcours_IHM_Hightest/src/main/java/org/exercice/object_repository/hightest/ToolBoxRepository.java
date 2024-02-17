@@ -21,7 +21,7 @@ public class ToolBoxRepository {
             toolBoxRepository = new ToolBoxRepository();
             webElementsRepository.put("Button to access the ISTQB Foundation level quizz in French", toolBoxRepository.iSTQBFoundationFrenchButton);
         } catch (NoSuchElementException e) {
-            testCase.log(Status.FAIL, "ToolBox page objects loading failed : " + e.getMessage());
+            testCase.log(Status.FAIL, "ToolBox page objects loading failed : " + e.getCause());
         }
         return toolBoxRepository;
     }
