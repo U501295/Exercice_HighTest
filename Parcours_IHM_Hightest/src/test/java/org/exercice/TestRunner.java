@@ -2,14 +2,14 @@ package org.exercice;
 
 import com.aventstack.extentreports.Status;
 import io.cucumber.core.backend.TestCaseState;
-import io.cucumber.core.gherkin.Pickle;
-import io.cucumber.core.gherkin.Step;
 import io.cucumber.java.After;
 import io.cucumber.java.AfterStep;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 import io.cucumber.plugin.event.PickleStepTestStep;
+import io.cucumber.plugin.event.Result;
 import io.cucumber.plugin.event.TestCase;
+import org.apache.commons.io.FileUtils;
 import org.exercice.utils.AutomTools;
 import org.junit.platform.suite.api.ConfigurationParameter;
 import org.junit.platform.suite.api.IncludeEngines;
@@ -43,12 +43,17 @@ import static org.exercice.utils.Reporter.testCase;
 @ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty, json:reports/tests/cucumber/json/cucumberTestReport.json")
 public class TestRunner {
 
+    //This property will allow us to keep track of the step which failed in the scenario, a new unit is
+    //added each time we start a new step
     private int currentStepDefIndex = 0;
 
     @Before("@Exercice")
-    public void setupForUI() {
+    public void setupForUI() throws IOException {
         makeDriverChrome();
+        //implicit wait is the duration to wait for an element before to let Selenium throw an exception
         driverImplicitWaitConfig(Duration.ofSeconds(15));
+        //clean the reports and elements from a previous run
+        FileUtils.cleanDirectory(new File("src/test/resources/output"));
         testCase = extent.createTest("Parcours bout en bout");
         extent.attachReporter(extentSparkReporter);
     }
@@ -56,53 +61,49 @@ public class TestRunner {
     @AfterStep("@Exercice")
     public void afterStep(Scenario scenario) throws IOException, IllegalAccessException, NoSuchFieldException {
         // Perform actions after each step, regardless of pass/fail status
-
         if (scenario.isFailed()) {
+            //take screenshot of the error to be put in the report
             File errorScreenShot = ((TakesScreenshot) defaultProjectDriver)
                     .getScreenshotAs(OutputType.FILE);
             BufferedImage errorImage = ImageIO.read(errorScreenShot);
             ImageIO.write(errorImage, "png", new File("src/test/resources/output/screenshotOfError.png"));
-            testCase.addScreenCaptureFromPath("src/test/resources/output/ResultImage.png");
+            testCase.addScreenCaptureFromPath("src/test/resources/output/screenshotOfError.png");
 
-            final byte[] screenshot = ((TakesScreenshot) defaultProjectDriver)
-                    .getScreenshotAs(OutputType.BYTES);
-            scenario.attach(screenshot, "image/png", "toto");
-
+            //The cucumber framework gives a property called scenario which represents
+            //an aggregate of the steps that are being executed
+            //it is composed of various elements we need to set as accessible, in order to target the current step's
+            //description which failed, in order to display it in the execution report
             Field delegate = scenario.getClass().getDeclaredField("delegate");
             delegate.setAccessible(true);
 
             TestCaseState state = (TestCaseState) delegate.get(scenario);
             Field testCaseF = state.getClass().getDeclaredField("testCase");
+            Field stepResults = state.getClass().getDeclaredField("stepResults");
             testCaseF.setAccessible(true);
+            stepResults.setAccessible(true);
 
             TestCase tC = (TestCase) testCaseF.get(state);
+            List<Result> sR = (List<Result>) stepResults.get(state);
             Field pickle = tC.getClass().getDeclaredField("pickle");
             pickle.setAccessible(true);
 
-            Pickle pickleState = (Pickle) pickle.get(tC);
-            List<Step> steps = pickleState.getSteps();
-
-//            Field f = scenario.getClass().getDeclaredField("testCase");
-//            //f.setAccessible(true);
-//            TestCase r = (TestCase) f.get(scenario);
-//
-            //You need to filter out before/after hooks
+            //We get a list of all the steps in the scenario.
+            //However, there's a problem about how to know the index of the current step which failed.
+            //This is why we implemented the currentStepDefIndex property
             List<PickleStepTestStep> stepDefs = tC.getTestSteps()
                     .stream()
                     .filter(x -> x instanceof PickleStepTestStep)
                     .map(x -> (PickleStepTestStep) x)
                     .collect(Collectors.toList());
-//
-//
-//            //This object now holds the information about the current step definition
-//            //If you are using pico container
-//            //just store it somewhere in your world state object
-//            //and to make it available in your step definitions.
+
+
+            //This object now holds the information about the current step definition we want to show in our report
             PickleStepTestStep currentStepDef = stepDefs
                     .get(currentStepDefIndex);
 
-
-            testCase.log(Status.FAIL, currentStepDef.getStep().getText());
+            //Display failed step description in the report
+            String error = sR.get(sR.size() - 1).getError().getCause().getMessage();
+            testCase.log(Status.FAIL, currentStepDef.getStep().getText() + "    Witnessed Error : " + error);
 
 
             AutomTools.closeDriver();

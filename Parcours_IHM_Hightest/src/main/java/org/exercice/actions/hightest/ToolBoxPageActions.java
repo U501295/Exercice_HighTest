@@ -8,6 +8,7 @@ import static org.exercice.object_repository.hightest.ToolBoxRepository.loadTool
 
 public class ToolBoxPageActions {
 
+
     public void clickISTQBFoundationFrenchButton() {
         ToolBoxRepository localContext = loadToolBoxContextObjects();
         AutomTools.customClick(ProjectRepository.getWebElementFromProjectRepo(localContext.getISTQBFoundationFrenchButton()));

@@ -39,6 +39,8 @@ public class AutomTools {
         defaultProjectDriver.manage().timeouts().implicitlyWait(duration);
     }
 
+    //this click overlay allows to target elements which are loaded on the page but not visible on the current
+    //display of the webpage, there's also logging added for reporting purposes
     private void configuredClick(Map.Entry<String, WebElement> entry) {
         Actions actions = new Actions(defaultProjectDriver);
         actions.moveToElement(entry.getValue());
@@ -53,8 +55,8 @@ public class AutomTools {
 
     public static void captureCroppedPicture() throws InterruptedException {
         BufferedImage image = null;
-        // get the entire screenshot from the driver of passed WebElement
         Thread.sleep(3000);
+        // get a screenshot from the driver
         File screen = ((TakesScreenshot) defaultProjectDriver)
                 .getScreenshotAs(OutputType.FILE);
         testCase.log(Status.PASS, "Success in taking a screenshot");
@@ -66,21 +68,19 @@ public class AutomTools {
             testCase.log(Status.FAIL, "Could not get image from screenshot");
         }
 
+        // create sub-image which will be used
+        BufferedImage sub = image.getSubimage(0, image.getHeight() / 2, image.getWidth(), image.getHeight() / 2);
 
-        // create image  for element using its location and size.
-        // this will give image data specific to the WebElement
-        BufferedImage dest = image.getSubimage(0, image.getHeight() / 2, image.getWidth(), image.getHeight() / 2);
-
-        // write back the image data for element in new File
+        // save the sub-image for reporting purpose
         try {
-            ImageIO.write(image, "png", new File("src/test/resources/output/Screenshot.png"));
-            ImageIO.write(dest, "png", new File("src/test/resources/output/ResultImage.png"));
+            ImageIO.write(sub, "png", new File("src/test/resources/output/ResultImageToBeInterpreted.png"));
         } catch (IOException e) {
             testCase.log(Status.FAIL, "Could not save image from screenshot in output folder");
         }
         testCase.log(Status.PASS, "Success in saving the screenshot");
     }
 
+    //this double-click overlay adds logging to the actual action for reporting purposes
     public static void customDoubleClick(Map.Entry<String, WebElement> entry) {
         try {
             Actions actions = new Actions(defaultProjectDriver);
@@ -94,7 +94,7 @@ public class AutomTools {
 
     }
 
-
+    //this sendKeys overlay adds logging to the actual action for reporting purposes
     public static void customSendKeys(Map.Entry<String, WebElement> entry, String content) {
         try {
             entry.getValue().sendKeys(content);
@@ -106,13 +106,14 @@ public class AutomTools {
         }
     }
 
-
     public static void switchTabFocus(Integer tab) {
         ArrayList<String> tabs = new ArrayList<>(defaultProjectDriver.getWindowHandles());
         defaultProjectDriver.switchTo().window(tabs.get(tab));
         testCase.log(Status.PASS, "Success in switching tab focus");
     }
 
+    //this function is a second overlay to the click method, it triggers a javascript instruction to manually scroll
+    //to the element if it's still not into view after the first "configuredClick" attempt
     public static void customClick(Map.Entry<String, WebElement> entry) {
         try {
             configuredClick(entry);

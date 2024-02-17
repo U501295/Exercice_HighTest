@@ -11,10 +11,6 @@ public class HightestResultPageAction {
     public void submitEmailAdressToReceiveResults(String adress) {
         HighTestResultPageRepository localContext = loadResultPageContextObjects();
         AutomTools.customSendKeys(ProjectRepository.getWebElementFromProjectRepo(localContext.getEmailBox()), adress);
-    }
-
-    public void clickOkayButton() {
-        HighTestResultPageRepository localContext = loadResultPageContextObjects();
         AutomTools.customClick(ProjectRepository.getWebElementFromProjectRepo(localContext.getSubmitButton()));
     }
 
