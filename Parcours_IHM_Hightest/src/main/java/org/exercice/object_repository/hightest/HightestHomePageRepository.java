@@ -20,7 +20,7 @@ public class HightestHomePageRepository {
             homePageRepository = new HightestHomePageRepository();
             webElementsRepository.put("Hightest home page toolbox button", homePageRepository.toolboxButton);
         } catch (NoSuchElementException e) {
-            testCase.log(Status.FAIL, "Hightest home page objects loading failed : " + e.getMessage());
+            testCase.log(Status.FAIL, "Hightest home page objects loading failed : " + e.getCause());
         }
         return homePageRepository;
     }

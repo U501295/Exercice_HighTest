@@ -2,6 +2,7 @@ package org.exercice.actions.hightest;
 
 import org.exercice.object_repository.hightest.ISTQBQuestionPageRepository;
 import org.exercice.utils.LocalDrivers;
+import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -13,9 +14,9 @@ import static org.exercice.utils.ProjectRepository.getWebElementFromProjectRepo;
 
 public class ISTQBQuestionPageActions {
 
-    public void explicitlyWaitForRadioButtonsToBeLoaded() {
+    public void explicitlyWaitForRadioButtonsToBeLoaded() throws NoSuchWindowException {
         ISTQBQuestionPageRepository localContext = loadISTQBQuestionsContextObjects();
-        WebDriverWait wait = new WebDriverWait(LocalDrivers.defaultProjectDriver, Duration.ofSeconds(50));
+        WebDriverWait wait = new WebDriverWait(LocalDrivers.defaultProjectDriver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.elementToBeClickable(localContext.getGoodAnswerQuestion1()));
 
     }

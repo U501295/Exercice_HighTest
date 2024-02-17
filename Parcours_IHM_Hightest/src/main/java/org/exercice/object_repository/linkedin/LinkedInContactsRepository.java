@@ -20,7 +20,7 @@ public class LinkedInContactsRepository {
             linkedInContactsRepository = new LinkedInContactsRepository();
             webElementsRepository.put("Fullscreen image from the linkedIn chat when you click on it", linkedInContactsRepository.zoomedImageElement);
         } catch (NoSuchElementException e) {
-            testCase.log(Status.FAIL, "LinkedIn contacts objects loading failed : " + e.getMessage());
+            testCase.log(Status.FAIL, "LinkedIn contacts objects loading failed : " + e.getCause());
         }
         return linkedInContactsRepository;
     }

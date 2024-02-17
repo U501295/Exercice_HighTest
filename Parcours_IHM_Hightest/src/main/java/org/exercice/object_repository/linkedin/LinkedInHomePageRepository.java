@@ -25,7 +25,7 @@ public class LinkedInHomePageRepository {
             webElementsRepository.put("Box where to put password in order to login on the LinkedIn website", homePageRepository.passwordBox);
             webElementsRepository.put("Submit button to login on the LinkedIn website", homePageRepository.submitButton);
         } catch (NoSuchElementException e) {
-            testCase.log(Status.FAIL, "LinkedIn home page objects loading failed : " + e.getMessage());
+            testCase.log(Status.FAIL, "LinkedIn home page objects loading failed : " + e.getCause());
         }
         return homePageRepository;
     }
