@@ -2,7 +2,6 @@ package org.exercice.actions.hightest;
 
 import org.exercice.object_repository.hightest.ISTQBQuestionPageRepository;
 import org.exercice.utils.LocalDrivers;
-import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -14,20 +13,11 @@ import static org.exercice.utils.ProjectRepository.getWebElementFromProjectRepo;
 
 public class ISTQBQuestionPageActions {
 
-    public void explicitlyWaitForRadioButtonsToBeLoaded() throws NoSuchWindowException {
+
+    public void goodAnswersToAllTestQuestionsAndSubmit() {
         ISTQBQuestionPageRepository localContext = loadISTQBQuestionsContextObjects();
         WebDriverWait wait = new WebDriverWait(LocalDrivers.defaultProjectDriver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.elementToBeClickable(localContext.getGoodAnswerQuestion1()));
-
-    }
-
-    public void clickTerminateButton() {
-        ISTQBQuestionPageRepository localContext = loadISTQBQuestionsContextObjects();
-        customClick(getWebElementFromProjectRepo(localContext.getTerminateButton()));
-    }
-
-    public void goodAnswersToAllTestQuestion() {
-        ISTQBQuestionPageRepository localContext = loadISTQBQuestionsContextObjects();
         customClick(getWebElementFromProjectRepo(localContext.getGoodAnswerQuestion1()));
         customClick(getWebElementFromProjectRepo(localContext.getGoodAnswerQuestion2()));
         customClick(getWebElementFromProjectRepo(localContext.getGoodAnswerQuestion3()));
@@ -48,5 +38,6 @@ public class ISTQBQuestionPageActions {
         customClick(getWebElementFromProjectRepo(localContext.getGoodAnswerQuestion18()));
         customClick(getWebElementFromProjectRepo(localContext.getGoodAnswerQuestion19()));
         customClick(getWebElementFromProjectRepo(localContext.getGoodAnswerQuestion20()));
+        customClick(getWebElementFromProjectRepo(localContext.getTerminateButton()));
     }
 }

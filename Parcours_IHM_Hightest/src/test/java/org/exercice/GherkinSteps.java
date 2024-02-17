@@ -35,16 +35,13 @@ public class GherkinSteps {
     @When("^I take the French ISTQB Quizz and all my answers are good$")
     public void i_take_the_French_ISTQB_Quizz() throws NoSuchWindowException {
         ISTQBQuestionPageActions onISTQBQuestionPage = new ISTQBQuestionPageActions();
-        onISTQBQuestionPage.explicitlyWaitForRadioButtonsToBeLoaded();
-        onISTQBQuestionPage.goodAnswersToAllTestQuestion();
-        onISTQBQuestionPage.clickTerminateButton();
+        onISTQBQuestionPage.goodAnswersToAllTestQuestionsAndSubmit();
     }
 
     @When("^I give Julien Baroni's email for him to receive the results$")
     public void i_give_Julien_Baroni_s_email_for_him_to_receive_the_results() {
         HightestResultPageAction onHightestResultPage = new HightestResultPageAction();
         onHightestResultPage.submitEmailAdressToReceiveResults("jul.baroni@orange.fr");
-        onHightestResultPage.clickOkayButton();
     }
 
     @When("^I connect to LinkedIn$")
@@ -64,9 +61,9 @@ public class GherkinSteps {
     @Then("^then content of the results indicates \"([^\"]*)\"$")
     public void then_content_of_the_results_indicates(String arg) throws TesseractException, InterruptedException {
         LinkedInMainPageActions onLinkedInMainPage = new LinkedInMainPageActions();
-        if (onLinkedInMainPage.checkTotalSuccess().contains(arg)) {
+        if (onLinkedInMainPage.getResultsFromImage().contains(arg)) {
             testCase.log(Status.PASS, "The total score is 100%");
-            testCase.addScreenCaptureFromPath("classpath:ResultImage.png");
+            testCase.addScreenCaptureFromPath("classpath:ResultImageToBeInterpreted.png");
         } else {
             testCase.log(Status.FAIL, "The total score is not 100%");
 

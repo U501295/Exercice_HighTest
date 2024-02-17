@@ -29,16 +29,20 @@ public class LinkedInMainPageActions {
         customClick(getWebElementFromProjectRepo(localContext.getResultImageInChat()));
     }
 
-    public String checkTotalSuccess() throws TesseractException, InterruptedException {
+    //This function will use text recognition technology from the Tesseract's framework to "read" the email
+    //and return the quizz result
+    public String getResultsFromImage() throws TesseractException, InterruptedException {
         LinkedInContactsRepository localContext = loadContactsContextObjects();
         customClick(getWebElementFromProjectRepo(localContext.getZoomedImageElement()));
+
+        //We croppe the result image to ensure the text recognition is optimized
         captureCroppedPicture();
 
         // Use Tesseract OCR to extract text from the image
         ITesseract tesseract = new Tesseract();
         tesseract.setLanguage("eng");
         tesseract.setDatapath("src/test/resources/tessdata");
-        return tesseract.doOCR(new File("src/test/resources/output/ResultImage.png"));
+        return tesseract.doOCR(new File("src/test/resources/output/ResultImageToBeInterpreted.png"));
     }
 
 

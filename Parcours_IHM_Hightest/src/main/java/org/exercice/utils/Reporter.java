@@ -5,6 +5,7 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import lombok.experimental.UtilityClass;
 
+//reporting class
 @UtilityClass
 public class Reporter {
 
