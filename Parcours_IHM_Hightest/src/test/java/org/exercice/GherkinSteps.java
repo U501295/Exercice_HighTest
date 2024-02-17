@@ -52,7 +52,7 @@ public class GherkinSteps {
     }
 
     @When("^I open the results Julien Baroni sent me$")
-    public void i_open_the_results_Julien_Baroni_sent_me() {
+    public void i_open_the_results_Julien_Baroni_sent_me() throws InterruptedException {
         LinkedInMainPageActions onLinkedInMainPage = new LinkedInMainPageActions();
         onLinkedInMainPage.openChatWindowWithJulienBaroni();
         onLinkedInMainPage.openResults();

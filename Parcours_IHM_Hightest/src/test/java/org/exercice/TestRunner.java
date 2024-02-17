@@ -7,7 +7,9 @@ import io.cucumber.java.AfterStep;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 import io.cucumber.plugin.event.PickleStepTestStep;
+import io.cucumber.plugin.event.Result;
 import io.cucumber.plugin.event.TestCase;
+import org.apache.commons.io.FileUtils;
 import org.exercice.utils.AutomTools;
 import org.junit.platform.suite.api.ConfigurationParameter;
 import org.junit.platform.suite.api.IncludeEngines;
@@ -46,10 +48,12 @@ public class TestRunner {
     private int currentStepDefIndex = 0;
 
     @Before("@Exercice")
-    public void setupForUI() {
+    public void setupForUI() throws IOException {
         makeDriverChrome();
         //implicit wait is the duration to wait for an element before to let Selenium throw an exception
         driverImplicitWaitConfig(Duration.ofSeconds(15));
+        //clean the reports and elements from a previous run
+        FileUtils.cleanDirectory(new File("src/test/resources/output"));
         testCase = extent.createTest("Parcours bout en bout");
         extent.attachReporter(extentSparkReporter);
     }
@@ -63,7 +67,7 @@ public class TestRunner {
                     .getScreenshotAs(OutputType.FILE);
             BufferedImage errorImage = ImageIO.read(errorScreenShot);
             ImageIO.write(errorImage, "png", new File("src/test/resources/output/screenshotOfError.png"));
-            testCase.addScreenCaptureFromPath("src/test/resources/output/ResultImageToBeInterpreted.png");
+            testCase.addScreenCaptureFromPath("src/test/resources/output/screenshotOfError.png");
 
             //The cucumber framework gives a property called scenario which represents
             //an aggregate of the steps that are being executed
@@ -74,9 +78,12 @@ public class TestRunner {
 
             TestCaseState state = (TestCaseState) delegate.get(scenario);
             Field testCaseF = state.getClass().getDeclaredField("testCase");
+            Field stepResults = state.getClass().getDeclaredField("stepResults");
             testCaseF.setAccessible(true);
+            stepResults.setAccessible(true);
 
             TestCase tC = (TestCase) testCaseF.get(state);
+            List<Result> sR = (List<Result>) stepResults.get(state);
             Field pickle = tC.getClass().getDeclaredField("pickle");
             pickle.setAccessible(true);
 
@@ -95,7 +102,8 @@ public class TestRunner {
                     .get(currentStepDefIndex);
 
             //Display failed step description in the report
-            testCase.log(Status.FAIL, currentStepDef.getStep().getText());
+            String error = sR.get(sR.size() - 1).getError().getCause().getMessage();
+            testCase.log(Status.FAIL, currentStepDef.getStep().getText() + "    Witnessed Error : " + error);
 
 
             AutomTools.closeDriver();

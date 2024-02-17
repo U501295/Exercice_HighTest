@@ -14,7 +14,7 @@ import static org.exercice.utils.Reporter.testCase;
 public class LinkedInChatPageRepository {
 
 
-    private final WebElement resultImageInChat = LocalDrivers.defaultProjectDriver.findElement(By.className("msg-s-event-listitem__image"));
+    private final WebElement resultImageInChat = LocalDrivers.defaultProjectDriver.findElement(By.className("msg-s-event-listitem__image-container"));
     public static LinkedInChatPageRepository loadChatContextObjects() {
         LinkedInChatPageRepository linkedInChatPageRepository = null;
         try {

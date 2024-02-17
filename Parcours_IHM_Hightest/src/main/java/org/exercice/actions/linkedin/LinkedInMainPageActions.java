@@ -6,8 +6,12 @@ import net.sourceforge.tess4j.TesseractException;
 import org.exercice.object_repository.linkedin.LinkedInChatPageRepository;
 import org.exercice.object_repository.linkedin.LinkedInContactsRepository;
 import org.exercice.object_repository.linkedin.LinkedInMainPageRepository;
+import org.exercice.utils.LocalDrivers;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
+import java.time.Duration;
 
 import static org.exercice.object_repository.linkedin.LinkedInChatPageRepository.loadChatContextObjects;
 import static org.exercice.object_repository.linkedin.LinkedInContactsRepository.loadContactsContextObjects;
@@ -26,6 +30,8 @@ public class LinkedInMainPageActions {
 
     public void openResults() {
         LinkedInChatPageRepository localContext = loadChatContextObjects();
+        WebDriverWait wait = new WebDriverWait(LocalDrivers.defaultProjectDriver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.visibilityOf(localContext.getResultImageInChat()));
         customClick(getWebElementFromProjectRepo(localContext.getResultImageInChat()));
     }
 
