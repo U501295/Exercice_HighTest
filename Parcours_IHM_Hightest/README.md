@@ -1,6 +1,6 @@
 # Exercice_HighTest
 
-This project was created in order to practise my course automation skills.
+This project was created in order to practice my automation skills.
 It was designed with a Page Object Model pattern and uses text recognition technology to reproduce
 an end to end usage of both HighTest and LinkedIn websites.
 
@@ -53,3 +53,9 @@ report.
 
 The test execution report and all the screenshots can be accessed in the folder
 located at the path : src/test/resources/output.
+
+## 4. Test launch
+
+1. Clone remote project to your local desktop : "git clone https://github.com/U501295/Exercice_HighTest.git"
+2. Open a terminal on the "Parcours_IHM_Hightest" folder, ensure you have a valid JAVA 17 JDK, and use the following
+   instruction "mvn clean install"
