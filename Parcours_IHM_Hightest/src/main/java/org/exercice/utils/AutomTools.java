@@ -53,7 +53,7 @@ public class AutomTools {
         testCase.log(Status.PASS, "Successful click on : " + entry.getKey() + " element");
     }
 
-    public static void captureCroppedPicture() throws InterruptedException {
+    public static void capturePicture() throws InterruptedException {
         BufferedImage image = null;
         Thread.sleep(3000);
         // get a screenshot from the driver
@@ -68,12 +68,9 @@ public class AutomTools {
             testCase.log(Status.FAIL, "Could not get image from screenshot");
         }
 
-        // create sub-image which will be used
-        BufferedImage sub = image.getSubimage(0, image.getHeight() / 2, image.getWidth(), image.getHeight() / 2);
-
-        // save the sub-image for reporting purpose
+        // save the image for reporting purpose
         try {
-            ImageIO.write(sub, "png", new File("src/test/resources/output/ResultImageToBeInterpreted.png"));
+            ImageIO.write(image, "png", new File("src/test/resources/output/ResultImageToBeInterpreted.png"));
         } catch (IOException e) {
             testCase.log(Status.FAIL, "Could not save image from screenshot in output folder");
         }
@@ -105,7 +102,6 @@ public class AutomTools {
             testCase.log(Status.FAIL, "Element : " + entry.getKey() + " is present but not usable to send keys");
         }
     }
-
     public static void switchTabFocus(Integer tab) {
         ArrayList<String> tabs = new ArrayList<>(defaultProjectDriver.getWindowHandles());
         defaultProjectDriver.switchTo().window(tabs.get(tab));

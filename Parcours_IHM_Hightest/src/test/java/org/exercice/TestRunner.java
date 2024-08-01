@@ -47,18 +47,40 @@ public class TestRunner {
     //added each time we start a new step
     private int currentStepDefIndex = 0;
 
-    @Before("@Exercice")
+    @Before
     public void setupForUI() throws IOException {
         makeDriverChrome();
         //implicit wait is the duration to wait for an element before to let Selenium throw an exception
         driverImplicitWaitConfig(Duration.ofSeconds(15));
         //clean the reports and elements from a previous run
         FileUtils.cleanDirectory(new File("src/test/resources/output"));
-        testCase = extent.createTest("Parcours bout en bout");
+    }
+
+    @Before("@ISTQB_QUIZZ_SCENARIO")
+    public void nameISTQBScenarioForReport() {
+        testCase = extent.createTest("ISTQB scenario");
         extent.attachReporter(extentSparkReporter);
     }
 
-    @AfterStep("@Exercice")
+    @Before("@CONTACT_MANDATORY_FIELDS_SCENARIO")
+    public void nameMandatoryFiledScenarioForReport() {
+        testCase = extent.createTest("Mandatory fields scenario");
+        extent.attachReporter(extentSparkReporter);
+    }
+
+    @Before("@CONTACT_INVALID_EMAIL_SCENARIO")
+    public void nameInvalidEmailScenarioForReport() {
+        testCase = extent.createTest("Invalid email scenario");
+        extent.attachReporter(extentSparkReporter);
+    }
+
+    @Before("@CONTACT_CONFIDENTIALITY_POLICY_NOT_ACCEPTED")
+    public void nameConfidentialityPolicyScenarioForReport() {
+        testCase = extent.createTest("Not accepted policy scenario");
+        extent.attachReporter(extentSparkReporter);
+    }
+
+    @AfterStep
     public void afterStep(Scenario scenario) throws IOException, IllegalAccessException, NoSuchFieldException {
         // Perform actions after each step, regardless of pass/fail status
         if (scenario.isFailed()) {
@@ -112,7 +134,7 @@ public class TestRunner {
         currentStepDefIndex += 1;
     }
 
-    @After("@Exercice")
+    @After
     public void tearDownForUi() {
         AutomTools.closeDriver();
         extent.flush();
