@@ -19,4 +19,9 @@ public class HightestHomePageActions {
         HightestHomePageRepository localContext = loadHomePageContextObjects();
         AutomTools.customClick(ProjectRepository.getWebElementFromProjectRepo(localContext.getToolboxButton()));
     }
+
+    public void clickContactButton() {
+        HightestHomePageRepository localContext = loadHomePageContextObjects();
+        AutomTools.customClick(ProjectRepository.getWebElementFromProjectRepo(localContext.getContactButton()));
+    }
 }
